@@ -62,8 +62,9 @@ const AccessTokenForm = ({ update }: { update?: boolean }) => {
     AccessTokenCreate | AccessTokenUpdate
   >()
 
-  const selectableScopes =
+  const selectableScopes = (
     enums.availableScopeValues as schemas['AvailableScope'][]
+  ).sort()
   const [allSelected, setSelectAll] = useState(false)
 
   const onToggleAll = useCallback(
