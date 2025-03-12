@@ -17,6 +17,7 @@ from polar.customer.schemas.customer import Customer
 from polar.kit import jwt
 from polar.kit.schemas import (
     ClassName,
+    EmptyStrToNoneValidator,
     IDSchema,
     MergeJSONSchema,
     Schema,
@@ -25,9 +26,7 @@ from polar.kit.schemas import (
     TimestampedSchema,
 )
 from polar.models.benefit import BenefitType
-from polar.models.benefit_grant import (
-    BenefitGrantProperties,
-)
+from polar.models.benefit_grant import BenefitGrantProperties
 from polar.organization.schemas import Organization, OrganizationID
 
 BENEFIT_DESCRIPTION_MIN_LENGTH = 3
@@ -240,7 +239,7 @@ class BenefitLicenseKeyActivationProperties(Schema):
 
 
 class BenefitLicenseKeysCreateProperties(Schema):
-    prefix: str | None = None
+    prefix: Annotated[str | None, EmptyStrToNoneValidator] = None
     expires: BenefitLicenseKeyExpirationProperties | None = None
     activations: BenefitLicenseKeyActivationProperties | None = None
     limit_usage: int | None = Field(gt=0, default=None)

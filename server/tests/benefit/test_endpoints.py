@@ -271,6 +271,38 @@ class TestUpdateBenefit:
         assert "properties" in json
         assert json["properties"]["note"] == "UPDATED NOTE"
 
+    @pytest.mark.auth
+    async def test_remove_license_key_prefix(
+        self,
+        save_fixture: SaveFixture,
+        client: AsyncClient,
+        organization: Organization,
+        user_organization: UserOrganization,
+    ) -> None:
+        benefit = await create_benefit(
+            save_fixture,
+            type=BenefitType.license_keys,
+            organization=organization,
+            properties={"prefix": "best prefix"},
+        )
+
+        response = await client.patch(
+            f"/v1/benefits/{benefit.id}",
+            json={
+                "type": benefit.type,
+                "description": benefit.description,
+                "properties": {"prefix": ""},
+            },
+        )
+
+        assert response.status_code == 200
+
+        json = response.json()
+        assert "properties" in json
+        assert (
+            json["properties"]["prefix"] is None
+        )  # making sure it's not an empty string
+
 
 @pytest.mark.asyncio
 class TestDeleteBenefit:
